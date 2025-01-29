@@ -7,6 +7,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class MovieController {
@@ -15,6 +17,13 @@ public class MovieController {
   @GetMapping("/movies")
   public ResponseEntity<List<Movie>> getMovies() {
     return ResponseEntity.ok(movies);
+  }
+
+  @GetMapping("/movies/search")
+  public ResponseEntity<List<Movie>> getMoviesMatching(@RequestParam String title) {
+    List<Movie> foundMovie = movies.stream().filter(m -> m.getTitle().toLowerCase().contains(title.toLowerCase())).collect(Collectors.toList());
+
+    return ResponseEntity.ok(foundMovie);
   }
 
   @GetMapping("/movies/{index}")
