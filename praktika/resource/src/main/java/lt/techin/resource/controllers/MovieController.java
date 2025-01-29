@@ -34,7 +34,7 @@ public class MovieController {
 
   @PostMapping("/movies")
   public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
-    if (movie.getDirector().isEmpty() || movie.getTitle().isEmpty()) {
+    if (movie.getDirector().isEmpty() || movie.getTitle().isEmpty() || movie.getDirector() == null || movie.getTitle() == null) {
       return ResponseEntity.badRequest().build();
     }
 
