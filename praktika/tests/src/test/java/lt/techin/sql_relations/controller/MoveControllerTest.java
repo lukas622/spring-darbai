@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -145,7 +146,12 @@ public class MoveControllerTest {
     @Test
     @WithMockUser(authorities = "ADMIN")
     void addMovies_Admin() throws Exception {
-        Movie movie1 = new Movie(1,"About Time", "Time Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
+        Screening screening1 = new Screening(1, "bla", new Date(), new Date(), 5, new BigDecimal(10));
+        Screening screening2 = new Screening(2, "bla", new Date(), new Date(), 5, new BigDecimal(10));
+
+        Actor actor1 = new Actor(1, "actor1", "last", 25);
+
+        Movie movie1 = new Movie(1,"About Time", "Timeraveller", List.of(screening1, screening2), List.of(actor1));
 
         given(movieService.saveMovie(ArgumentMatchers.any(Movie.class))).willReturn(movie1);
 
@@ -157,10 +163,49 @@ public class MoveControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("title").value("About Time"))
-                .andExpect(jsonPath("director").value("Time Traveller"))
+                .andExpect(jsonPath("director").value("Timeraveller"))
                 .andExpect(jsonPath("screenings").isArray())
                 .andExpect(jsonPath("actors").isArray());
 
         Mockito.verify(movieService, times(1)).saveMovie(ArgumentMatchers.any(Movie.class));
+    }
+
+    @Test
+    @WithMockUser(authorities = "ADMIN")
+    void addMovies_FailOne() throws Exception {
+        Screening screening1 = new Screening(1, "bla", new Date(), new Date(), 5, new BigDecimal(10));
+        Screening screening2 = new Screening(2, "bla", new Date(), new Date(), 5, new BigDecimal(10));
+
+        Actor actor1 = new Actor(1, "actor1", "last", 25);
+
+        Movie movie1 = new Movie(1,"About Time", "TimeTraveller", List.of(screening1, screening2), List.of(actor1));
+
+        given(movieService.saveMovie(ArgumentMatchers.any(Movie.class))).willReturn(movie1);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(movie1)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addMovies_User() throws Exception {
+        Screening screening1 = new Screening(1, "bla", new Date(), new Date(), 5, new BigDecimal(10));
+        Screening screening2 = new Screening(2, "bla", new Date(), new Date(), 5, new BigDecimal(10));
+
+        Actor actor1 = new Actor(1, "actor1", "last", 25);
+
+        Movie movie1 = new Movie(1,"About Time", "Timeraveller", List.of(screening1, screening2), List.of(actor1));
+
+        given(movieService.saveMovie(ArgumentMatchers.any(Movie.class))).willReturn(movie1);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(movie1)))
+                .andExpect(status().isUnauthorized());
     }
 }
