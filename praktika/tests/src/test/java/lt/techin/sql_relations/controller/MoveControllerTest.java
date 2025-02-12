@@ -1,5 +1,6 @@
 package lt.techin.sql_relations.controller;
 
+import lt.techin.sql_relations.model.Actor;
 import lt.techin.sql_relations.model.Movie;
 import lt.techin.sql_relations.model.Screening;
 import lt.techin.sql_relations.security.SecurityConfig;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +37,8 @@ public class MoveControllerTest {
     @Test
     @WithMockUser(authorities = "ADMIN")
     void getMovies_AuthenticatedUser() throws Exception {
-        Movie movie1 = new Movie(1,"About Time", "Time Traveller");
-        Movie movie2 = new Movie(2, "About Nature", "Nature Traveller");
+        Movie movie1 = new Movie(1,"About Time", "Time Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
+        Movie movie2 = new Movie(2, "About Nature", "Nature Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
 
         List<Movie> movies = List.of(movie1, movie2);
 
@@ -47,9 +49,13 @@ public class MoveControllerTest {
                 .andExpect(jsonPath("[0].id").exists())
                 .andExpect(jsonPath("[0].title").value("About Time"))
                 .andExpect(jsonPath("[0].director").value("Time Traveller"))
+                .andExpect(jsonPath("[0].screenings").isArray())
+                .andExpect(jsonPath("[0].actors").isArray())
                 .andExpect(jsonPath("[1].id").exists())
                 .andExpect(jsonPath("[1].title").value("About Nature"))
-                .andExpect(jsonPath("[1].director").value("Nature Traveller"));
+                .andExpect(jsonPath("[1].director").value("Nature Traveller"))
+                .andExpect(jsonPath("[1].screenings").isArray())
+                .andExpect(jsonPath("[1].actors").isArray());
 
         Mockito.verify(movieService, times(1)).findAllMovies();
     }
@@ -70,8 +76,8 @@ public class MoveControllerTest {
 
     @Test
     void getMovies_UnauthenticatedUser() throws Exception {
-        Movie movie1 = new Movie(1,"About Time", "Time Traveller");
-        Movie movie2 = new Movie(2, "About Nature", "Nature Traveller");
+        Movie movie1 = new Movie(1,"About Time", "Time Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
+        Movie movie2 = new Movie(2, "About Nature", "Nature Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
 
         List<Movie> movies = List.of(movie1, movie2);
 
@@ -88,12 +94,15 @@ public class MoveControllerTest {
     @Test
     @WithMockUser(authorities = "ADMIN")
     void getMovies_WithID() throws Exception {
-        Movie movie1 = new Movie(1,"About Time", "Time Traveller");
-        Movie movie2 = new Movie(2, "About Nature", "Nature Traveller");
+        Movie movie1 = new Movie(1,"About Time", "Time Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
+        Movie movie2 = new Movie(2, "About Nature", "Nature Traveller", new ArrayList<Screening>(), new ArrayList<Actor>());
 
         List<Movie> movies = List.of(movie1, movie2);
 
-        given(movieService.findMovieById(1)).willReturn(Optional.of(movie1));
+        given(movieService.findMovieById(1)).willReturn(movie1);
+
+        System.out.println(movieService.findMovieById(1));
+        System.out.println(movie1);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/movies/1"))
                 .andExpect(status().isOk());

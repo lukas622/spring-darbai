@@ -21,8 +21,8 @@ public class MovieService {
     return movieRepository.findAll();
   }
 
-  public Optional<Movie> findMovieById(long id) {
-    return movieRepository.findById(id);
+  public Movie findMovieById(long id) {
+    return movieRepository.findById(id).orElseThrow(NullPointerException::new);
   }
 
   public Movie saveMovie(Movie movie) {

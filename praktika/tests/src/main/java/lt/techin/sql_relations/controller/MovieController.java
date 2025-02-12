@@ -30,7 +30,7 @@ public class MovieController {
   @GetMapping("/movies/{id}")
   public ResponseEntity<MovieDTO> getMovie(@PathVariable long id) {
     if (!movieService.existsMovieById(id)) return ResponseEntity.notFound().build();
-    return ResponseEntity.ok(MovieMapper.toMovieDTO(movieService.findMovieById(id).orElseThrow(NullPointerException::new)));
+    return ResponseEntity.ok(MovieMapper.toMovieDTO(movieService.findMovieById(id)));
   }
 
   @PostMapping("/movies")
@@ -57,7 +57,7 @@ public class MovieController {
               .body(MovieMapper.toMovieDTO(newMovie));
     }
 
-    Movie movieFromDB = movieService.findMovieById(id).get();
+    Movie movieFromDB = movieService.findMovieById(id);
 
     MovieMapper.updateMovieFromDTO(movieFromDB, movieDTO);
 

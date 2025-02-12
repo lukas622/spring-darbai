@@ -47,10 +47,12 @@ public class Movie {
     this.actors = actors;
   }
 
-  public Movie(long id, String title, String director) {
+  public Movie(long id, String title, String director, List<Screening> screenings, List<Actor> actors) {
     this.id = id;
     this.title = title;
     this.director = director;
+    this.screenings = screenings;
+    this.actors = actors;
   }
 
   public Movie() {
