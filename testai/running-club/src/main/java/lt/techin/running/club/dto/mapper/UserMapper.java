@@ -1,5 +1,6 @@
 package lt.techin.running.club.dto.mapper;
 
+import lt.techin.running.club.dto.UserRequestDTO;
 import lt.techin.running.club.dto.UserResponseDTO;
 import lt.techin.running.club.model.User;
 
@@ -9,6 +10,14 @@ public class UserMapper {
   public static List<UserResponseDTO> toUserResponseDTOList(List<User> users) {
 
     return users.stream().map((User user) -> new UserResponseDTO(user.getId(), user.getUsername(), user.getRoles())).toList();
+  }
+
+  public static UserRequestDTO toUserRequestDTO(User user) {
+    return new UserRequestDTO(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+  }
+
+  public static UserResponseDTO toUserResponseDTO(User user) {
+    return new UserResponseDTO(user.getId(), user.getUsername(), user.getRoles());
   }
 
 }

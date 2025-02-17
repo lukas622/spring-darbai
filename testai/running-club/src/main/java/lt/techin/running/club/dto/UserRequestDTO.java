@@ -8,7 +8,7 @@ import lt.techin.running.club.model.Role;
 
 import java.util.List;
 
-public record UserRequestDTO(
-        @NotNull @Pattern(regexp = "^[a-z][0-9]+$") @Size(min = 4) String username,
-        @NotNull @Size(min = 6) String password, @NotNull List<Role> roles) {
+public record UserRequestDTO(@NotNull long id,
+                             @NotNull @Pattern(regexp = "^[a-z][0-9]+$") @Size(min = 4) String username,
+                             @NotNull @Size(min = 6) String password, @NotNull List<Role> roles) {
 }
