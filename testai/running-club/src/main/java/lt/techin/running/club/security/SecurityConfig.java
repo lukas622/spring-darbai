@@ -18,12 +18,15 @@ public class SecurityConfig {
     http
             .authorizeHttpRequests((authorize) -> authorize
                     .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAuthority("ROLE_ADMIN")
+
                     .requestMatchers(HttpMethod.GET, "/api/events").hasAuthority("ROLE_USER")
-                    .requestMatchers(HttpMethod.GET, "/api/events/{id}").hasAuthority("ROLE_USER")
+                    .requestMatchers(HttpMethod.GET, "/api/events/**").hasAuthority("ROLE_USER")
                     .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/events/{id}").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasAuthority("ROLE_ADMIN")
+
+                    .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ROLE_ADMIN")
+
                     .anyRequest().authenticated()
             )
             .csrf(c -> c.disable())

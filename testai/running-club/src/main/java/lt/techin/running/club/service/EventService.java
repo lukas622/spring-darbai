@@ -32,4 +32,12 @@ public class EventService {
   public void removeEvent(long id) {
     runningEventRepository.deleteById(id);
   }
+
+  public boolean existsById(long id) {
+    return runningEventRepository.existsById(id);
+  }
+
+  public RunningEvent findById(long id) {
+    return runningEventRepository.findById(id).orElseThrow(NullPointerException::new);
+  }
 }

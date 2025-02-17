@@ -1,5 +1,6 @@
 package lt.techin.running.club.controller;
 
+import jakarta.validation.Valid;
 import lt.techin.running.club.dto.UserRequestDTO;
 import lt.techin.running.club.dto.UserResponseDTO;
 import lt.techin.running.club.dto.mapper.UserMapper;
@@ -39,18 +40,18 @@ public class UserController {
   }
 
   @PostMapping("/auth/register")
-  public ResponseEntity<UserRequestDTO> addUser(@RequestBody User user) {
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setRoles(List.of(new Role("ROLE_USER")));
+  public ResponseEntity<UserRequestDTO> addUser(@Valid @RequestBody UserRequestDTO user) {
+    User newUser = UserMapper.UserRequestDTOToUser(user);
 
-    User newUser = userService.addUser(user);
+    newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+    newUser.setRoles(List.of(new Role("ROLE_USER")));
 
-    UserRequestDTO userRequestDTO = UserMapper.toUserRequestDTO(newUser);
+    userService.addUser(newUser);
 
     return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(userRequestDTO.id())
+                    .buildAndExpand(user.id())
                     .toUri())
-            .body(userRequestDTO);
+            .body(UserMapper.toUserRequestDTO(newUser));
   }
 }

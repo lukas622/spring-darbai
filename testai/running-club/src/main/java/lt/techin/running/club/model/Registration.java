@@ -13,17 +13,16 @@ public class Registration {
   private long id;
 
   // ManyToOne
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne()
   @JoinColumn(name = "user_id")
   private User user;
 
   // ManyToOne
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne()
   @JoinColumn(name = "running_event_id")
   private RunningEvent runningEvent;
 
-  public Registration(long id, User user, RunningEvent runningEvent, Timestamp registrationDate) {
-    this.id = id;
+  public Registration(User user, RunningEvent runningEvent, Timestamp registrationDate) {
     this.user = user;
     this.runningEvent = runningEvent;
     this.registrationDate = registrationDate;
