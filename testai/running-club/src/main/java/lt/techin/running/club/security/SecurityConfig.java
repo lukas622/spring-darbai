@@ -17,17 +17,19 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
             .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+//                    .requestMatchers(HttpMethod.POST, "/api/events/*/register").hasAuthority("ROLE_USER")
 
-                    .requestMatchers(HttpMethod.GET, "/api/events").hasAuthority("ROLE_USER")
-                    .requestMatchers(HttpMethod.GET, "/api/events/**").hasAuthority("ROLE_USER")
-                    .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/events").hasAuthority("ROLE_USER")
+                            .requestMatchers(HttpMethod.GET, "/api/events/**").hasAuthority("ROLE_USER")
+                            .requestMatchers(HttpMethod.POST, "/api/events").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/events/*/participants").hasAuthority("ROLE_ADMIN")
 
-                    .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ROLE_ADMIN")
 
-                    .anyRequest().authenticated()
+                            .anyRequest().authenticated()
             )
             .csrf(c -> c.disable())
             .httpBasic(Customizer.withDefaults());

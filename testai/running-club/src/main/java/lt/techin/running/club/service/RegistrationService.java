@@ -5,6 +5,8 @@ import lt.techin.running.club.repository.RegistrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RegistrationService {
   public final RegistrationRepository registrationRepository;
@@ -16,5 +18,9 @@ public class RegistrationService {
 
   public void addRegistration(Registration registration) {
     registrationRepository.save(registration);
+  }
+
+  public List<Registration> getRegistrations() {
+    return registrationRepository.findAll();
   }
 }

@@ -70,6 +70,19 @@ public class EventController {
     return ResponseEntity.ok().build();
   }
 
+  public boolean checkIfRegistered(long eventId, long userId) {
+    List<Registration> registrations = registrationService.getRegistrations();
+
+    for (Registration registration : registrations) {
+      if (registration.getUser().getId() == userId && registration.getRunningEvent().getId() == eventId) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
   @PostMapping("/events/{id}/register")
   public ResponseEntity<RegistrationRequestDTO> register(@PathVariable long id) {
     User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -78,6 +91,11 @@ public class EventController {
 
     Date newDate = new Date();
     Registration newRegistration = new Registration(user, eventService.findEvent(id), new Timestamp(newDate.getTime()));
+
+    // Have not tested this enough
+//    if (checkIfRegistered(id, user.getId())) {
+//      return ResponseEntity.badRequest().build();
+//    }
 
     registrationService.addRegistration(newRegistration);
 
