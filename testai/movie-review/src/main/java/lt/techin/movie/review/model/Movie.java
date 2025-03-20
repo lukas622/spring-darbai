@@ -1,11 +1,11 @@
 package lt.techin.movie.review.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
+@Table(name = "movies")
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,8 +17,11 @@ public class Movie {
 
     private String title;
 
-    public Movie(long id, String genre, int releaseYear, String title) {
-        this.id = id;
+    @OneToMany
+    @JoinColumn(name="movie_id")
+    private List<Review> reviews;
+
+    public Movie(String genre, int releaseYear, String title) {
         this.genre = genre;
         this.releaseYear = releaseYear;
         this.title = title;
@@ -52,5 +55,13 @@ public class Movie {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

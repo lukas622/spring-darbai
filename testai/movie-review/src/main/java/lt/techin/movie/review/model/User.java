@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +18,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -25,13 +26,25 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
-    public User(long id, String username, String password) {
-        this.id = id;
+    @OneToMany
+    @JoinColumn(name="user_id")
+    private List<Review> reviews;
+
+    public User(String username, String password, List<Role> roles) {
         this.username = username;
         this.password = password;
+        this.roles = roles;
     }
 
     public User() {}
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public List<Role> setRoles(List<Role> roles) {
+        return this.roles = roles;
+    }
 
     public long getId() {
         return id;
@@ -56,5 +69,13 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }
